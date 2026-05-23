@@ -1,111 +1,73 @@
 import { useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
-const BANDS = [
-  { top: '12%', h: 36, color: 'rgba(255,107,53,0.18)', delay: 0.04, dx: 12  },
-  { top: '31%', h: 18, color: 'rgba(167,139,250,0.14)', delay: 0.09, dx: -9 },
-  { top: '49%', h: 52, color: 'rgba(255,107,53,0.12)', delay: 0.02, dx: 16  },
-  { top: '68%', h: 22, color: 'rgba(167,139,250,0.16)', delay: 0.07, dx: -6 },
-  { top: '82%', h: 14, color: 'rgba(255,215,0,0.10)',   delay: 0.05, dx: 10 },
-]
+// Cinematic letterbox: two black bars snap in from top/bottom, orange burn line
+// appears at the seam, projector flash fires, screen goes black → navigate.
+const EASE = [0.76, 0, 0.24, 1]
 
 export default function HomeTransition({ isVisible, onComplete }) {
   useEffect(() => {
     if (!isVisible) return
-    const t = setTimeout(onComplete, 560)
+    const t = setTimeout(onComplete, 600)
     return () => clearTimeout(t)
   }, [isVisible, onComplete])
 
+  if (!isVisible) return null
+
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <div style={{
-          position: 'fixed', inset: 0,
-          zIndex: 500, overflow: 'hidden', pointerEvents: 'none',
-        }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 500, pointerEvents: 'none' }}>
 
-          {/* Horizontal glitch bands — slice across screen with lateral offset */}
-          {BANDS.map((b, i) => (
-            <motion.div
-              key={i}
-              initial={{ scaleX: 0, x: 0, opacity: 0 }}
-              animate={{
-                scaleX: [0, 1,    1,    0   ],
-                x:      [0, b.dx, b.dx, 0   ],
-                opacity:[0, 1,    1,    0   ],
-              }}
-              transition={{ duration: 0.28, delay: b.delay, times: [0, 0.25, 0.72, 1], ease: 'easeOut' }}
-              style={{
-                position: 'absolute', top: b.top, left: 0, right: 0,
-                height: b.h, background: b.color,
-                transformOrigin: 'left center',
-                mixBlendMode: 'screen',
-              }}
-            />
-          ))}
+      {/* Top bar */}
+      <motion.div
+        initial={{ y: '-100%' }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.34, ease: EASE }}
+        style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: '50%',
+          background: '#000',
+        }}
+      />
 
-          {/* RGB channel split — red layer right, cyan layer left */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.55, 0, 0.35, 0] }}
-            transition={{ duration: 0.22, delay: 0.08, times: [0, 0.15, 0.4, 0.65, 1] }}
-            style={{
-              position: 'absolute', inset: 0,
-              background: 'rgba(255,40,40,0.09)',
-              transform: 'translateX(6px)',
-            }}
-          />
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.55, 0, 0.35, 0] }}
-            transition={{ duration: 0.22, delay: 0.08, times: [0, 0.15, 0.4, 0.65, 1] }}
-            style={{
-              position: 'absolute', inset: 0,
-              background: 'rgba(0,220,120,0.07)',
-              transform: 'translateX(-6px)',
-            }}
-          />
+      {/* Bottom bar */}
+      <motion.div
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.34, ease: EASE }}
+        style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%',
+          background: '#000',
+        }}
+      />
 
-          {/* Orange shockwave ring — expands from center and fades */}
-          <motion.div
-            initial={{ scale: 0, opacity: 1 }}
-            animate={{ scale: 10, opacity: 0 }}
-            transition={{ duration: 0.55, ease: [0.15, 0, 0.85, 1] }}
-            style={{
-              position: 'absolute',
-              top: '50%', left: '50%',
-              width: 160, height: 160,
-              marginTop: -80, marginLeft: -80,
-              borderRadius: '50%',
-              border: '2px solid var(--orange)',
-              boxShadow: '0 0 32px rgba(255,107,53,0.7), inset 0 0 32px rgba(255,107,53,0.2)',
-            }}
-          />
+      {/* Orange burn line — appears as bars close */}
+      <motion.div
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{ scaleX: [0, 1, 1, 1], opacity: [0, 1, 1, 0] }}
+        transition={{ duration: 0.32, delay: 0.28, times: [0, 0.18, 0.65, 1], ease: 'easeOut' }}
+        style={{
+          position: 'absolute', top: '50%', left: 0, right: 0,
+          height: 2, marginTop: -1,
+          background: 'var(--orange)',
+          boxShadow: '0 0 14px rgba(255,107,53,0.9), 0 0 40px rgba(255,107,53,0.4)',
+          transformOrigin: 'center',
+        }}
+      />
 
-          {/* Second, larger delayed ring */}
-          <motion.div
-            initial={{ scale: 0, opacity: 0.6 }}
-            animate={{ scale: 12, opacity: 0 }}
-            transition={{ duration: 0.5, delay: 0.06, ease: [0.15, 0, 0.85, 1] }}
-            style={{
-              position: 'absolute',
-              top: '50%', left: '50%',
-              width: 160, height: 160,
-              marginTop: -80, marginLeft: -80,
-              borderRadius: '50%',
-              border: '1px solid rgba(167,139,250,0.6)',
-            }}
-          />
+      {/* Projector flash — fires just as bars meet */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.85, 0] }}
+        transition={{ duration: 0.18, delay: 0.30, times: [0, 0.45, 1] }}
+        style={{ position: 'absolute', inset: 0, background: '#fff' }}
+      />
 
-          {/* Final dark cover — slides over everything */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.18, delay: 0.37 }}
-            style={{ position: 'absolute', inset: 0, background: '#06001a' }}
-          />
-        </div>
-      )}
-    </AnimatePresence>
+      {/* Hold black */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.01, delay: 0.34 }}
+        style={{ position: 'absolute', inset: 0, background: '#000' }}
+      />
+    </div>
   )
 }

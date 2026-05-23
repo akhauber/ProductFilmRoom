@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 export default function HomeTransition({ isVisible, onComplete }) {
   useEffect(() => {
     if (!isVisible) return
-    const t = setTimeout(onComplete, 780)
+    const t = setTimeout(onComplete, 1100)
     return () => clearTimeout(t)
   }, [isVisible, onComplete])
 
@@ -18,7 +18,7 @@ export default function HomeTransition({ isVisible, onComplete }) {
       <motion.div
         initial={{ width: '250vmax', height: '250vmax' }}
         animate={{ width: 0, height: 0 }}
-        transition={{ duration: 0.72, ease: [0.4, 0, 0.9, 1] }}
+        transition={{ duration: 1.0, ease: [0.4, 0, 0.9, 1] }}
         style={{
           position: 'absolute',
           top: '50%', left: '50%',

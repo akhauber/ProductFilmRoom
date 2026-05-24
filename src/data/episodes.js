@@ -36,7 +36,7 @@ Brex still has extremely valuable infrastructure, software, and relationships. A
     id: 2,
     episode: "EP. 002",
     title: "Stripe and Abstraction",
-    spineTitle: "STRIPE VS. PAYPAL",
+    spineTitle: "STRIPE VS PAYPAL",
     subtitle: "How abstraction turned Stripe into the go-to payment processor",
     description: "In 2025, Stripe was the default payment gateway for 73% of US eCommerce startups. The reason it dethroned PayPal comes down to one software principle applied in a way nobody had thought to try.",
     date: "2026-04-12",

@@ -183,26 +183,30 @@ function TapeSpine({ episode, accentColor, hovered, isNewest }) {
             {String(episode.id).padStart(3, '0')}
           </span>
 
-          <span style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: 6.5,
-            color: '#1a0e2a',
-            writingMode: 'vertical-rl',
-            transform: 'rotate(180deg)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.03em',
-            lineHeight: 1,
+          <div style={{
             flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            textAlign: 'center',
-            padding: '3px 0',
-            display: 'block',
             width: '100%',
           }}>
-            {episode.spineTitle || episode.title}
-          </span>
+            <span style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 6.5,
+              color: '#1a0e2a',
+              writingMode: 'vertical-rl',
+              transform: 'rotate(180deg)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.03em',
+              lineHeight: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>
+              {episode.spineTitle || episode.title}
+            </span>
+          </div>
 
           <span style={{
             fontFamily: "'Courier New', monospace",
@@ -212,7 +216,7 @@ function TapeSpine({ episode, accentColor, hovered, isNewest }) {
             flexShrink: 0,
             textAlign: 'center',
           }}>
-            {episode.date.slice(2, 7).replace('-', '/')}
+            {episode.date.slice(5, 7) + '/' + episode.date.slice(2, 4)}
           </span>
         </div>
       </div>

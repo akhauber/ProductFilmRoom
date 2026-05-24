@@ -1,0 +1,202 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap {
+  background: #1a0a2e;
+  padding: 28px 24px 32px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+  min-height: 520px;
+}
+.scanlines {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+  pointer-events: none;
+  z-index: 10;
+}
+.title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  color: #ff6b35;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.subtitle {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #a78bfa;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 16px;
+  z-index: 2;
+  position: relative;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+}
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+}
+.chart-area {
+  position: relative;
+  width: 100%;
+  height: 360px;
+}
+.footer {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: #4a2d8a;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-top: 16px;
+  position: relative;
+  z-index: 2;
+}
+</style>
+
+<div class="wrap">
+  <div class="scanlines"></div>
+  <div class="title">Valuation Over Time</div>
+  <div class="subtitle">Brex vs Ramp — 2018 to 2025</div>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#ff6b35;"></div>
+      <span style="color:#ff6b35;">BREX</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#00c2a8;"></div>
+      <span style="color:#00c2a8;">RAMP</span>
+    </div>
+  </div>
+  <div class="chart-area">
+    <canvas id="valChart" role="img" aria-label="Line chart comparing Brex and Ramp valuations from 2018 to 2025. Brex peaked at 12.3B in 2022 then fell to 5.15B. Ramp grew from 1.6B in 2021 to 32B in 2025.">Brex: 1.1B in 2018, peaked at 12.3B in 2022, fell to 5.15B by 2025. Ramp: 1.6B in 2021, grew to 32B by 2025.</canvas>
+  </div>
+  <div class="footer">PRODUCT FILM ROOM · EP. 003 · © 2026</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const brexPoints = [
+  { x: 2018.0, y: 1.1 },
+  { x: 2019.0, y: 2.6 },
+  { x: 2020.0, y: 2.6 },
+  { x: 2021.25, y: 7.4 },
+  { x: 2021.75, y: 7.4 },
+  { x: 2022.0, y: 12.3 },
+  { x: 2025.9, y: 5.15 },
+];
+
+const rampPoints = [
+  { x: 2021.25, y: 1.6 },
+  { x: 2021.75, y: 3.9 },
+  { x: 2022.0, y: 8.1 },
+  { x: 2023.0, y: 5.8 },
+  { x: 2024.5, y: 7.65 },
+  { x: 2025.25, y: 13 },
+  { x: 2025.6, y: 22.5 },
+  { x: 2025.9, y: 32 },
+];
+
+new Chart(document.getElementById('valChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      {
+        label: 'Brex',
+        data: brexPoints,
+        borderColor: '#ff6b35',
+        backgroundColor: '#ff6b35',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#ff6b35',
+        pointBorderColor: '#1a0a2e',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        showLine: true,
+        tension: 0.3,
+        fill: false,
+      },
+      {
+        label: 'Ramp',
+        data: rampPoints,
+        borderColor: '#00c2a8',
+        backgroundColor: '#00c2a8',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#00c2a8',
+        pointBorderColor: '#1a0a2e',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        showLine: true,
+        tension: 0.3,
+        fill: false,
+        borderDash: [6, 3],
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#2d1b5e',
+        borderColor: '#4a2d8a',
+        borderWidth: 1,
+        titleColor: '#e2d9f3',
+        bodyColor: '#a78bfa',
+        titleFont: { family: "'Press Start 2P', monospace", size: 7 },
+        bodyFont: { family: "'Courier New', monospace", size: 11 },
+        callbacks: {
+          title: items => items[0].dataset.label,
+          label: ctx => ' $' + ctx.parsed.y + 'B  (' + Math.round(ctx.parsed.x) + ')'
+        }
+      }
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        min: 2017.5,
+        max: 2026.2,
+        ticks: {
+          color: '#a78bfa',
+          font: { family: "'Press Start 2P', monospace", size: 9 },
+          stepSize: 1,
+          callback: v => Number.isInteger(v) ? String(v) : '',
+          maxRotation: 0,
+          autoSkip: false,
+        },
+        grid: { color: 'rgba(74,45,138,0.3)' },
+        border: { color: '#4a2d8a' }
+      },
+      y: {
+        ticks: {
+          color: '#a78bfa',
+          font: { family: "'Press Start 2P', monospace", size: 9 },
+          callback: v => '$' + v + 'B'
+        },
+        grid: { color: 'rgba(74,45,138,0.3)' },
+        border: { color: '#4a2d8a' },
+        min: 0,
+        max: 36,
+      }
+    }
+  }
+});
+</script>

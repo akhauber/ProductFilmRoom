@@ -1,0 +1,105 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; overflow-x: hidden; }
+.wrap {
+  background: #1a0a2e;
+  padding: 32px 24px 12px;
+  font-family: 'Courier New', monospace;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+.code-line {
+  display: block;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 2;
+  white-space: pre;
+}
+.scanlines {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+  pointer-events: none; z-index: 10;
+}
+.title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px; color: #ff6b35;
+  text-transform: uppercase; letter-spacing: 2px;
+  text-align: center; margin-bottom: 6px;
+}
+.subtitle {
+  font-family: 'Courier New', monospace;
+  font-size: 10px; color: #a78bfa;
+  text-align: center; letter-spacing: 1px;
+  margin-bottom: 28px;
+}
+.col-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px; letter-spacing: 1px;
+  color: #a89fff; margin-bottom: 8px; display: block;
+}
+.code-block {
+  background: #0d0620;
+  border: 1px solid rgba(99,91,255,0.4);
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;
+}
+.code-block::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: #635BFF;
+}
+.line-num {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: rgba(99,91,255,0.35);
+  width: 18px;
+  user-select: none;
+}
+.attr { color: #50fa7b; }
+.val  { color: #f1fa8c; }
+.tag  { color: #8be9fd; }
+.fn   { color: #a89fff; }
+.str  { color: #f1fa8c; }
+.num  { color: #bd93f9; }
+.footer {
+  font-family: 'Courier New', monospace;
+  font-size: 9px; color: #6a4db8;
+  text-align: center; margin-top: 12px; letter-spacing: 1px;
+}
+</style>
+
+<div class="wrap">
+  <div class="scanlines"></div>
+  <div class="title">The 7-line demo</div>
+  <div class="subtitle">Stripe · YC Demo Day · 2011</div>
+
+  <span class="col-label">frontend — the card form</span>
+  <div class="code-block">
+    <span class="code-line"><span class="line-num">1</span><span class="tag">&lt;form</span> <span class="attr">action</span>=<span class="val">""</span> <span class="attr">method</span>=<span class="val">"POST"</span><span class="tag">&gt;</span></span>
+    <span class="code-line"><span class="line-num">2</span>  <span class="tag">&lt;script</span></span>
+    <span class="code-line"><span class="line-num">3</span>    <span class="attr">src</span>=<span class="val">"checkout.stripe.com/checkout.js"</span></span>
+    <span class="code-line"><span class="line-num">4</span>    <span class="attr">data-key</span>=<span class="val">"pk_test_..."</span></span>
+    <span class="code-line"><span class="line-num">5</span>    <span class="attr">data-amount</span>=<span class="val">"2000"</span><span class="tag">&gt;</span></span>
+    <span class="code-line"><span class="line-num">6</span>  <span class="tag">&lt;/script&gt;</span></span>
+    <span class="code-line"><span class="line-num">7</span><span class="tag">&lt;/form&gt;</span></span>
+  </div>
+
+  <span class="col-label">backend — the charge</span>
+  <div class="code-block">
+    <span class="code-line"><span class="line-num">1</span><span class="fn">stripe</span>.<span class="fn">Charge</span>.<span class="fn">create</span>(</span>
+    <span class="code-line"><span class="line-num">2</span>  <span class="attr">amount</span>=<span class="num">2000</span>,</span>
+    <span class="code-line"><span class="line-num">3</span>  <span class="attr">currency</span>=<span class="str">"usd"</span>,</span>
+    <span class="code-line"><span class="line-num">4</span>  <span class="attr">card</span>=<span class="fn">request</span>.<span class="fn">POST</span>[<span class="str">"stripeToken"</span>]</span>
+    <span class="code-line"><span class="line-num">5</span>)</span>
+  </div>
+
+  <div class="footer">PRODUCT FILM ROOM · EP. 002 · © 2026</div>
+</div>

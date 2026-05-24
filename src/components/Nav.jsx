@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 const NAV_LINKS = [
-  { label: '// ARCHIVE', to: '/archive' },
+  { label: 'ARCHIVE', to: '/archive' },
   { label: 'ABOUT', to: '/about' },
 ]
 
@@ -70,24 +70,6 @@ export default function Nav() {
         {NAV_LINKS.map(({ label, to }) => (
           <NavLink key={to} label={label} to={to} style={linkStyle(to)} />
         ))}
-        <a
-          href="https://productfilmroom.substack.com"
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: 8,
-            color: 'var(--orange)',
-            textDecoration: 'none',
-            textTransform: 'uppercase',
-            lineHeight: 1.8,
-            transition: 'color 80ms ease',
-          }}
-          onMouseEnter={e => e.currentTarget.style.color = 'var(--green)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'var(--orange)'}
-        >
-          {'> SUBSCRIBE'}
-        </a>
       </div>
 
       {menuOpen && (
@@ -120,24 +102,6 @@ export default function Nav() {
               {label}
             </Link>
           ))}
-          <a
-            href="https://productfilmroom.substack.com"
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => setMenuOpen(false)}
-            style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: 8,
-              color: 'var(--orange)',
-              textDecoration: 'none',
-              textTransform: 'uppercase',
-              lineHeight: 1.8,
-              padding: '16px 24px',
-              display: 'block',
-            }}
-          >
-            {'> SUBSCRIBE'}
-          </a>
         </div>
       )}
     </nav>

@@ -67,7 +67,7 @@ export default function EpisodePage() {
         fontSize: 14,
         color: 'var(--text-muted)',
         lineHeight: 1.8,
-        marginBottom: 8,
+        marginBottom: 6,
       }}>
         {episode.subtitle}
       </div>
@@ -75,25 +75,20 @@ export default function EpisodePage() {
       <div style={{
         fontFamily: "'Courier New', monospace",
         fontSize: 10,
-        color: 'var(--text-muted)',
-        lineHeight: 1.8,
+        color: 'rgba(167,139,250,0.45)',
+        letterSpacing: '0.08em',
         marginBottom: 40,
       }}>
-        {episode.date}
+        {(() => {
+          const [y,m,d] = episode.date.split('-')
+          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+          return `${months[parseInt(m,10)-1]}. ${parseInt(d,10)}, ${y}`
+        })()}
       </div>
 
       <GraphicBlock episode={episode} />
 
-      <div style={{
-        fontFamily: "'Courier New', monospace",
-        fontSize: 14,
-        color: 'var(--text-primary)',
-        lineHeight: 1.8,
-        whiteSpace: 'pre-wrap',
-        marginBottom: 48,
-      }}>
-        {episode.content}
-      </div>
+      <ContentRenderer content={episode.content} charts={episode.charts || {}} />
 
       <a
         href={episode.substackUrl}
@@ -131,10 +126,67 @@ export default function EpisodePage() {
         borderTop: '1px solid var(--border)',
         paddingTop: 32,
       }}>
-        <NavButton ep={prevEp} direction="prev" />
         <NavButton ep={nextEp} direction="next" />
+        <NavButton ep={prevEp} direction="prev" />
       </div>
     </motion.div>
+  )
+}
+
+// Splits content on [CHARTKEY] markers and renders iframes in their place.
+function ContentRenderer({ content, charts }) {
+  const markerRe = /(\[CHART\w+\])/g
+  const parts = content.split(markerRe)
+
+  return (
+    <div style={{ marginBottom: 48 }}>
+      {parts.map((part, i) => {
+        const match = part.match(/^\[(\w+)\]$/)
+        if (match && charts[match[1]]) {
+          const chart = charts[match[1]]
+          const src   = typeof chart === 'string' ? chart : chart.src
+          return (
+            <iframe
+              key={i}
+              src={src}
+              scrolling="no"
+              title={`chart-${match[1]}`}
+              style={{
+                width: '100%',
+                height: 200,
+                border: 'none',
+                display: 'block',
+                margin: '24px 0',
+                overflow: 'hidden',
+              }}
+              onLoad={e => {
+                try {
+                  const doc = e.target.contentDocument || e.target.contentWindow.document
+                  e.target.style.height = doc.documentElement.scrollHeight + 'px'
+                } catch (_) {}
+              }}
+            />
+          )
+        }
+        // Trim leading newline that appears right after a chart block
+        const text = i > 0 ? part.replace(/^\n/, '') : part
+        return (
+          <span
+            key={i}
+            style={{
+              fontFamily: "'Courier New', monospace",
+              fontSize: 14,
+              color: 'var(--text-primary)',
+              lineHeight: 1.8,
+              whiteSpace: 'pre-wrap',
+              display: 'block',
+            }}
+          >
+            {text}
+          </span>
+        )
+      })}
+    </div>
   )
 }
 
@@ -152,35 +204,14 @@ function GraphicBlock({ episode }) {
     )
   }
 
-  return (
-    <div style={{
-      width: '100%',
-      height: 300,
-      background: 'var(--bg-container)',
-      border: '1px solid var(--border)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 40,
-    }}>
-      <span style={{
-        fontFamily: "'Press Start 2P', monospace",
-        fontSize: 10,
-        color: 'var(--text-muted)',
-        textTransform: 'uppercase',
-        lineHeight: 1.8,
-      }}>
-        [ NO GRAPHIC ]
-      </span>
-    </div>
-  )
+  return null
 }
 
 function NavButton({ ep, direction }) {
   const isDisabled = !ep
   const label = direction === 'prev'
-    ? ep ? `< EP. ${String(ep.id).padStart(3, '0')} — ${ep.title.toUpperCase()}` : '< PREV'
-    : ep ? `EP. ${String(ep.id).padStart(3, '0')} — ${ep.title.toUpperCase()} >` : 'NEXT >'
+    ? ep ? `EP. ${String(ep.id).padStart(3, '0')} — ${ep.title.toUpperCase()} >` : 'PREV >'
+    : ep ? `< EP. ${String(ep.id).padStart(3, '0')} — ${ep.title.toUpperCase()}` : '< NEXT'
 
   const baseStyle = {
     fontFamily: "'Press Start 2P', monospace",

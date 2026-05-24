@@ -8,7 +8,7 @@ export default function ArchivePage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      style={{ padding: '80px 48px 48px' }}
+      style={{ padding: '80px 48px 48px', overflow: 'visible' }}
     >
       <div style={{
         fontFamily: "'Press Start 2P', monospace",

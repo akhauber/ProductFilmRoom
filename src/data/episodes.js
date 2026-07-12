@@ -39,7 +39,7 @@ Brex still has extremely valuable infrastructure, software, and relationships. A
     spineTitle: "STRIPE VS PAYPAL",
     subtitle: "How abstraction turned Stripe into the go-to payment processor",
     description: "In 2025, Stripe was the default payment gateway for 73% of US eCommerce startups. The reason it dethroned PayPal comes down to one software principle applied in a way nobody had thought to try.",
-    date: "2026-04-12",
+    date: "2026-04-11",
     substackUrl: "https://productfilmroom.substack.com",
     graphicPath: "/graphics/ep002.png",
     charts: {
@@ -68,7 +68,7 @@ Takeaway: Stripe's success comes from taking an existing software principle, abs
     spineTitle: "INSTAGRAM",
     subtitle: "A hidden product decision that made Instagram the stickiest social media app of 2017",
     description: "In 2017, Instagram hit a 62% DAU/MAU ratio — one of the stickiest apps ever built. The secret wasn't technical. It was a UX decision hiding in plain sight.",
-    date: "2026-04-05",
+    date: "2026-04-01",
     substackUrl: "https://substack.com/home/post/p-192791954",
     graphicPath: "/graphics/ep001.png",
     charts: { CHART1: "/charts/ep001-daumau.html" },

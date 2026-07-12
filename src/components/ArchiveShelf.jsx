@@ -39,14 +39,14 @@ function ShelfRow({ episodes, startIndex }) {
       {/* Tapes */}
       <div style={{
         display: 'flex',
-        gap: 4,
+        gap: 6,
         padding: '28px 18px 0',
         overflowX: 'auto',
         overflowY: 'visible',
         position: 'relative',
         zIndex: 10,
         alignItems: 'flex-end',
-        minHeight: 220,
+        minHeight: 320,
         scrollbarWidth: 'thin',
         scrollbarColor: 'rgba(167,139,250,0.25) transparent',
       }}>
@@ -100,7 +100,7 @@ function ShelfRow({ episodes, startIndex }) {
 function EmptySlot() {
   return (
     <div style={{
-      width: 38, height: 185, flexShrink: 0,
+      width: 72, height: 280, flexShrink: 0,
       border: '1px dashed rgba(255,255,255,0.04)',
       borderBottom: 'none',
     }} />

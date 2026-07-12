@@ -17,7 +17,12 @@ export default function CassetteTape({ episode, isNewest = false, index = 0 }) {
     clearTimeout(leaveTimer.current)
     if (spineRef.current) {
       const rect = spineRef.current.getBoundingClientRect()
-      setCardPos({ x: rect.left + rect.width / 2, y: rect.top - 14 })
+      // Anchor the card below-right of the tape so it never covers neighboring tapes.
+      const CARD_W = 230
+      const CARD_H = 390
+      const x = Math.max(12, Math.min(rect.right - 26, window.innerWidth - CARD_W - 12))
+      const y = Math.min(rect.bottom + 26, window.innerHeight - CARD_H - 12)
+      setCardPos({ x, y })
     }
     setHovered(true)
   }
@@ -49,8 +54,8 @@ export default function CassetteTape({ episode, isNewest = false, index = 0 }) {
         onMouseEnter={enter}
         onMouseLeave={leave}
         style={{
-          width: 38,
-          height: 185,
+          width: 72,
+          height: 280,
           position: 'relative',
           cursor: 'pointer',
           transformOrigin: 'bottom center',
@@ -93,112 +98,124 @@ export default function CassetteTape({ episode, isNewest = false, index = 0 }) {
   )
 }
 
+// Deterministic seeded random — same pattern as HomePage.jsx
+function sr(seed) {
+  const x = Math.sin(seed * 9301 + 49297) * 233280
+  return x - Math.floor(x)
+}
+
 function TapeSpine({ episode, accentColor, hovered, isNewest }) {
+  const seed = episode.id
+  const labelTilt   = (sr(seed * 3 + 1) - 0.5) * 2.4          // −1.2° … +1.2°
+  const stickerTilt = (sr(seed * 3 + 2) - 0.5) * 16           // −8° … +8°
+  const wornCorner  = sr(seed * 3 + 3) > 0.5 ? 'tl' : 'br'    // which label corner peeled
+
+  const TOP = 12      // height of the receding top face
+  const SPINE_W = 62  // spine face width (top face overhangs to the right)
+
   return (
-    <div style={{
-      position: 'absolute', inset: 0,
-      // Plastic housing — darker at edges, slightly lighter in center
-      background: 'linear-gradient(to right, #0c0c18 0%, #1c1c2c 18%, #1e1e2e 50%, #1c1c2c 82%, #0c0c18 100%)',
-      overflow: 'hidden',
-      transition: 'box-shadow 0.2s ease',
-      boxShadow: hovered
-        ? `0 0 22px ${accentColor}55, inset 0 0 0 1px rgba(255,255,255,0.1)`
-        : 'inset 0 0 0 1px rgba(255,255,255,0.05), 1px 0 0 rgba(255,255,255,0.04)',
-    }}>
-      {/* Left bevel — raised plastic edge highlight */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, bottom: 0, width: 3,
-        background: 'linear-gradient(to right, rgba(255,255,255,0.14), rgba(255,255,255,0.03))',
-      }} />
-      <div style={{
-        position: 'absolute', top: 0, left: 3, bottom: 0, width: 1,
-        background: 'rgba(0,0,0,0.55)',
-      }} />
+    <div style={{ position: 'absolute', inset: 0 }}>
 
-      {/* Right bevel — shadow drop */}
+      {/* ── Top face — cassette top receding toward the shelf back ── */}
       <div style={{
-        position: 'absolute', top: 0, right: 3, bottom: 0, width: 1,
-        background: 'rgba(0,0,0,0.45)',
-      }} />
-      <div style={{
-        position: 'absolute', top: 0, right: 0, bottom: 0, width: 3,
-        background: 'linear-gradient(to left, rgba(255,255,255,0.09), rgba(255,255,255,0.02))',
-      }} />
-
-      {/* Housing seam — where the two cassette halves snap together */}
-      <div style={{
-        position: 'absolute', top: '44%', left: 0, right: 0, height: 1,
-        background: 'rgba(0,0,0,0.65)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.04)',
-      }} />
-
-      {/* Paper label */}
-      <div style={{
-        position: 'absolute',
-        top: 13, bottom: 13, left: 5, right: 5,
-        background: 'linear-gradient(160deg, #ede5d2 0%, #e2d9c2 45%, #eae2ce 100%)',
-        borderRadius: 1,
-        boxShadow: '0 0 0 0.5px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.75)',
-        overflow: 'hidden',
+        position: 'absolute', top: 0, left: 0,
+        width: SPINE_W, height: TOP,
+        transform: 'skewX(-38deg)',
+        transformOrigin: 'bottom left',
+        background: 'linear-gradient(to bottom, #060610 0%, #14141f 100%)',
+        borderTop: '1px solid rgba(255,255,255,0.10)',
+        borderRight: '1px solid rgba(0,0,0,0.7)',
       }}>
-        {/* Faint paper grain */}
+        {/* Flap seam ridge on the top face */}
         <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `
-            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.018) 2px, rgba(0,0,0,0.018) 3px),
-            repeating-linear-gradient(0deg, transparent, transparent 5px, rgba(0,0,0,0.012) 5px, rgba(0,0,0,0.012) 6px)
-          `,
+          position: 'absolute', top: 4, left: 0, right: 0, height: 1,
+          background: 'rgba(255,255,255,0.05)',
+        }} />
+      </div>
+
+      {/* ── Spine face — the plastic shell ── */}
+      <div style={{
+        position: 'absolute', top: TOP, left: 0, bottom: 0,
+        width: SPINE_W,
+        borderRadius: 2,
+        // Molded black plastic: near-black edges, charcoal center
+        background: `
+          linear-gradient(to right,
+            #05050c 0%, #16161f 12%, #1b1b26 30%, #22222e 50%, #1b1b26 70%, #14141d 88%, #05050c 100%)
+        `,
+        overflow: 'hidden',
+        transition: 'box-shadow 0.2s ease',
+        boxShadow: hovered
+          ? `0 0 22px ${accentColor}55, inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -2px 3px rgba(0,0,0,0.6)`
+          : 'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -2px 3px rgba(0,0,0,0.6), inset -1px 0 1px rgba(0,0,0,0.5), 2px 3px 6px rgba(0,0,0,0.55)',
+      }}>
+        {/* Glossy sheen streak — molded plastic highlight */}
+        <div style={{
+          position: 'absolute', top: 0, bottom: 0, left: '12%', width: 7,
+          background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.10) 50%, transparent)',
         }} />
 
-        {/* Color bar — top of label */}
+        {/* Brand print — like "RCA T-120" on the shell itself */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: 7,
-          background: accentColor,
-          opacity: 0.88,
-        }} />
-
-        {/* Color bar — bottom of label */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: 3,
-          background: accentColor,
-          opacity: 0.55,
-        }} />
-
-        {/* Label text */}
-        <div style={{
-          position: 'absolute', top: 10, bottom: 5, left: 1, right: 1,
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'space-between',
+          position: 'absolute', top: 7, left: 0, right: 0,
+          textAlign: 'center',
         }}>
-          <span style={{
-            fontFamily: "'Courier New', monospace",
-            fontSize: 6,
-            fontWeight: 'bold',
-            color: '#251508',
-            textAlign: 'center',
-            lineHeight: 1,
-            flexShrink: 0,
-            letterSpacing: '0.02em',
-          }}>
-            {String(episode.id).padStart(3, '0')}
-          </span>
-
           <div style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 7,
+            color: 'rgba(240,236,250,0.85)',
+            lineHeight: 1,
+            letterSpacing: '0.05em',
+          }}>
+            PFR
+          </div>
+          <div style={{
+            fontFamily: "'Courier New', monospace",
+            fontSize: 7,
+            fontWeight: 'bold',
+            color: 'rgba(240,236,250,0.5)',
+            lineHeight: 1,
+            marginTop: 4,
+            letterSpacing: '0.08em',
+          }}>
+            T-120
+          </div>
+        </div>
+
+        {/* ── Long paper label — runs nearly the full spine like the reference ── */}
+        <div style={{
+          position: 'absolute',
+          top: 32, bottom: 32, left: 5, right: 5,
+          transform: `rotate(${labelTilt}deg)`,
+          background: 'linear-gradient(165deg, #f4efe2 0%, #eae3d0 55%, #f0eadb 100%)',
+          borderRadius: 1,
+          boxShadow: '0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.8)',
+          overflow: 'hidden',
+          clipPath: wornCorner === 'tl'
+            ? 'polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 5px)'
+            : 'polygon(0 0, 100% 0, 100% calc(100% - 5px), calc(100% - 6px) 100%, 0 100%)',
+        }}>
+          {/* Stripe stack — top of label, like the color bands in the reference */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+            <div style={{ height: 5, background: accentColor, opacity: 0.9 }} />
+            <div style={{ height: 4, background: accentColor, opacity: 0.55, marginTop: 2 }} />
+            <div style={{ height: 3, background: accentColor, opacity: 0.3, marginTop: 2 }} />
+          </div>
+
+          {/* Title — vertical, fills the label */}
+          <div style={{
+            position: 'absolute', top: 22, bottom: 40, left: 1, right: 1,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
             overflow: 'hidden',
-            width: '100%',
           }}>
             <span style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: 6.5,
-              color: '#1a0e2a',
+              fontFamily: "'Permanent Marker', cursive",
+              fontSize: 13,
+              color: '#241831',
               writingMode: 'vertical-rl',
               transform: 'rotate(180deg)',
               textTransform: 'uppercase',
-              letterSpacing: '0.03em',
+              letterSpacing: '0.04em',
               lineHeight: 1,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -208,19 +225,60 @@ function TapeSpine({ episode, accentColor, hovered, isNewest }) {
             </span>
           </div>
 
+          {/* Episode number — label bottom */}
           <span style={{
-            fontFamily: "'Courier New', monospace",
-            fontSize: 5.5,
-            color: 'rgba(30,12,4,0.52)',
-            lineHeight: 1,
-            flexShrink: 0,
+            position: 'absolute', bottom: 20, left: 0, right: 0,
+            fontFamily: "'Permanent Marker', cursive",
+            fontSize: 10,
+            color: '#251508', lineHeight: 1,
             textAlign: 'center',
           }}>
-            {episode.date.slice(5, 7) + '/' + episode.date.slice(2, 4)}
+            {String(episode.id).padStart(3, '0')}
+          </span>
+
+          {/* Date — very bottom of label */}
+          <span style={{
+            position: 'absolute', bottom: 6, left: 0, right: 0,
+            fontFamily: "'Permanent Marker', cursive",
+            fontSize: 8,
+            color: 'rgba(30,12,4,0.6)',
+            lineHeight: 1,
+            textAlign: 'center',
+          }}>
+            {(() => { const [y, m, d] = episode.date.split('-'); return `${m}/${d}/${y.slice(2)}` })()}
           </span>
         </div>
-      </div>
 
+        {/* ── VHS logo sticker — bottom black area, classic rainbow-over-VHS mark ── */}
+        <div style={{
+          position: 'absolute', bottom: 6, left: '50%',
+          transform: `translateX(-50%) rotate(${stickerTilt * 0.3}deg)`,
+          width: 34, height: 18,
+          background: '#0d0d14',
+          border: '1px solid rgba(255,255,255,0.25)',
+          borderRadius: 2,
+          overflow: 'hidden',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.6)',
+        }}>
+          {/* Rainbow stripes */}
+          <div style={{ display: 'flex', height: 5 }}>
+            <div style={{ flex: 1, background: '#e03a2f' }} />
+            <div style={{ flex: 1, background: '#f08c1e' }} />
+            <div style={{ flex: 1, background: '#f4c81f' }} />
+          </div>
+          <div style={{
+            fontFamily: "'Courier New', monospace",
+            fontSize: 8, fontWeight: 'bold',
+            fontStyle: 'italic',
+            color: '#f0ecfa',
+            textAlign: 'center',
+            lineHeight: '12px',
+            letterSpacing: '0.05em',
+          }}>
+            VHS
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -259,7 +317,7 @@ function VHSFrontFace({ episode, accentColor }) {
           marginBottom: 5,
           opacity: 0.9,
         }}>
-          {episode.episode} · {episode.date}
+          {episode.episode} · {(() => { const [y,m,d] = episode.date.split('-'); return `${m}-${d}-${y}` })()}
         </div>
         <div style={{
           fontFamily: "'Press Start 2P', monospace",
@@ -285,26 +343,8 @@ function VHSFrontFace({ episode, accentColor }) {
         )}
       </div>
 
-      {/* Reel window housing */}
-      <div style={{
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.4))',
-        borderBottom: '1px solid rgba(255,255,255,0.04)',
-        padding: '12px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-      }}>
-        <ReelWindow />
-        {/* Tape path */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
-          <div style={{ width: '100%', height: 1.5, background: 'rgba(80,60,40,0.6)', borderRadius: 1 }} />
-          <div style={{ fontFamily: "'Courier New', monospace", fontSize: 7, color: 'rgba(255,255,255,0.12)', letterSpacing: '0.05em' }}>
-            T-120
-          </div>
-          <div style={{ width: '100%', height: 1.5, background: 'rgba(80,60,40,0.6)', borderRadius: 1 }} />
-        </div>
-        <ReelWindow />
-      </div>
+      {/* Episode thumbnail — falls back to reel windows if the image is missing */}
+      <Thumbnail episode={episode} />
 
       {/* Description + CTA */}
       <div style={{ padding: '11px 14px 13px' }}>
@@ -315,7 +355,7 @@ function VHSFrontFace({ episode, accentColor }) {
           lineHeight: 1.65,
           margin: '0 0 9px',
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
         }}>
@@ -333,6 +373,47 @@ function VHSFrontFace({ episode, accentColor }) {
           {'WATCH EPISODE'}
         </div>
       </div>
+    </div>
+  )
+}
+
+function Thumbnail({ episode }) {
+  const [imgError, setImgError] = useState(false)
+
+  if (episode.graphicPath && !imgError) {
+    return (
+      <img
+        src={episode.graphicPath}
+        alt={episode.title}
+        onError={() => setImgError(true)}
+        style={{
+          width: '100%',
+          display: 'block',
+          borderBottom: '1px solid rgba(255,255,255,0.04)',
+        }}
+      />
+    )
+  }
+
+  // Fallback: original reel-window housing
+  return (
+    <div style={{
+      background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.4))',
+      borderBottom: '1px solid rgba(255,255,255,0.04)',
+      padding: '12px 20px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+    }}>
+      <ReelWindow />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+        <div style={{ width: '100%', height: 1.5, background: 'rgba(80,60,40,0.6)', borderRadius: 1 }} />
+        <div style={{ fontFamily: "'Courier New', monospace", fontSize: 7, color: 'rgba(255,255,255,0.12)', letterSpacing: '0.05em' }}>
+          T-120
+        </div>
+        <div style={{ width: '100%', height: 1.5, background: 'rgba(80,60,40,0.6)', borderRadius: 1 }} />
+      </div>
+      <ReelWindow />
     </div>
   )
 }

@@ -199,7 +199,7 @@ function GraphicBlock({ episode }) {
         src={episode.graphicPath}
         alt={episode.title}
         onError={() => setImgError(true)}
-        style={{ width: '100%', display: 'block', marginBottom: 40 }}
+        style={{ width: '70%', maxWidth: 420, display: 'block', margin: '0 auto 40px', borderRadius: 4 }}
       />
     )
   }

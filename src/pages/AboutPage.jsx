@@ -58,8 +58,8 @@ function PlayerCard() {
   return (
     <div
       style={{
-        width: 340,
-        height: 476,
+        width: 320,
+        height: 480,
         perspective: 1400,
         cursor: 'pointer',
         userSelect: 'none',

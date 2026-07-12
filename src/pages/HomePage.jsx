@@ -7,21 +7,26 @@ import HomeTransition from '../components/HomeTransition'
 // To use real logos: set logoPath to '/logos/ramp.png' and drop the file in /public/logos/
 // To add more companies: extend this array — physics handles any count
 const COMPANIES = [
-  { name: 'RAMP',    color: '#ff6b35', logoPath: null },
-  { name: 'BREX',    color: '#a78bfa', logoPath: null },
-  { name: 'STRIPE',  color: '#ffd700', logoPath: null },
-  { name: 'PAYPAL',  color: '#39ff14', logoPath: null },
-  { name: 'LINEAR',  color: '#ff6b35', logoPath: null },
-  { name: 'JIRA',    color: '#a78bfa', logoPath: null },
-  { name: 'FIGMA',   color: '#ffd700', logoPath: null },
-  { name: 'NOTION',  color: '#e2d9f3', logoPath: null },
-  { name: 'VERCEL',  color: '#a78bfa', logoPath: null },
-  { name: 'GITHUB',  color: '#ffd700', logoPath: null },
-  { name: 'LOOM',    color: '#ff6b35', logoPath: null },
-  { name: 'SLACK',   color: '#39ff14', logoPath: null },
+  { name: 'RAMP',        color: '#ccff00', logoPath: '/logos/ramp.png',         pad: 4  },
+  { name: 'BREX',        color: '#a78bfa', logoPath: '/logos/brex.png',         pad: 8,  invert: true },
+  { name: 'STRIPE',      color: '#635BFF', logoPath: '/logos/stripe.jpg',       pad: 12 },
+  { name: 'PAYPAL',      color: '#003087', logoPath: '/logos/paypal.png',       pad: 0  },
+  { name: 'JIRA',        color: '#0052CC', logoPath: '/logos/jira.svg',         pad: 10 },
+  { name: 'FIGMA',       color: '#F24E1E', logoPath: '/logos/figma.png',        pad: 14 },
+  { name: 'NOTION',      color: '#e2d9f3', logoPath: '/logos/notion.png',       pad: 14, invert: true },
+  { name: 'ANTHROPIC',   color: '#D97757', logoPath: '/logos/anthropic.svg',    pad: 18 },
+  { name: 'META',        color: '#0082FB', logoPath: '/logos/meta.png',         pad: 16 },
+  { name: 'CAPITAL ONE', color: '#D03027', logoPath: '/logos/capitalone.png',   pad: 14 },
+  { name: 'DROPBOX',     color: '#0061FF', logoPath: '/logos/dropbox.png',      pad: 14 },
+  { name: 'GITHUB',      color: '#e2d9f3', logoPath: '/logos/github.png',       pad: 18, invert: true },
+  { name: 'INSTAGRAM',   color: '#E1306C', logoPath: '/logos/instagram.png',    pad: 14 },
+  { name: 'SLACK',       color: '#4A154B', logoPath: '/logos/slack.png',        pad: 12 },
+  { name: 'SERVICENOW',  color: '#62D84E', logoPath: '/logos/servicenow.svg',   pad: 10 },
+  { name: 'PLAID',       color: '#00C9A7', logoPath: '/logos/plaid.jpg',        pad: 8  },
+  { name: 'BLOCK',       color: '#3E4348', logoPath: '/logos/block.svg',        pad: 10, invert: true },
 ]
 
-const PARTICLE_COUNT = 22
+const PARTICLE_COUNT = COMPANIES.length
 
 // ─── Deterministic seeded random ─────────────────────────────────────────────
 function sr(seed) {
@@ -32,36 +37,66 @@ function sr(seed) {
 // ─── Physics-based floating logos ────────────────────────────────────────────
 // Particles move freely and bounce off walls and each other (elastic collision).
 // DOM is updated directly via refs — zero React re-renders during animation.
-function FloatingLogos({ companies, count = PARTICLE_COUNT }) {
+function FloatingLogos({ companies, count = PARTICLE_COUNT, heroRef }) {
   const elemsRef = useRef([])
   const stateRef = useRef(null)
   const rafRef   = useRef(null)
 
   const initData = useMemo(() =>
     Array.from({ length: count }, (_, i) => {
-      const co   = companies[i % companies.length]
-      const size = sr(i * 7 + 3) * 42 + 44   // 44–86 px
-      const spd  = sr(i * 7 + 4) * 10 + 12   // 12-22 px/s
+      const co   = companies[i]
+      const size = 90
+      const spd  = sr(i * 7 + 4) * 4 + 3     // 3-7 px/s
       const ang  = sr(i * 7 + 5) * Math.PI * 2
       return {
         id: i, ...co, size,
         r:     size / 2,
-        xPct:  sr(i * 7 + 1) * 76 + 12,
-        yPct:  sr(i * 7 + 2) * 76 + 12,
         vx:    Math.cos(ang) * spd,
         vy:    Math.sin(ang) * spd,
-        alpha: sr(i * 7 + 8) * 0.22 + 0.10,
+        alpha: sr(i * 7 + 8) * 0.10 + 0.12,  // 0.12–0.22, muted
       }
     }),
   [companies, count])
 
   useEffect(() => {
-    // Convert % to px using current viewport
-    stateRef.current = initData.map(d => ({
-      ...d,
-      x: (d.xPct / 100) * window.innerWidth,
-      y: (d.yPct / 100) * window.innerHeight,
-    }))
+    // Build a fine grid over the viewport, exclude cells overlapping the hero,
+    // then evenly sample from the remaining candidates — logos spread all around the card.
+    const W = window.innerWidth
+    const H = window.innerHeight
+    const n = initData.length
+    const hero = heroRef?.current?.getBoundingClientRect()
+
+    const GCOLS = 9, GROWS = 6
+    const cw = W / GCOLS, ch = H / GROWS
+    const pad = 55 // clearance around hero
+
+    const candidates = []
+    for (let r = 0; r < GROWS; r++) {
+      for (let c = 0; c < GCOLS; c++) {
+        const x = (c + 0.5) * cw
+        const y = (r + 0.5) * ch
+        if (hero &&
+          x > hero.left - pad && x < hero.right  + pad &&
+          y > hero.top  - pad && y < hero.bottom + pad) continue
+        candidates.push({ x, y })
+      }
+    }
+
+    // Evenly sample n positions from the candidates list, then jitter within the cell
+    const positions = Array.from({ length: n }, (_, i) => {
+      const idx = Math.round(i * (candidates.length - 1) / Math.max(n - 1, 1))
+      const base = candidates[idx] ?? candidates[candidates.length - 1]
+      return {
+        x: base.x + (sr(i * 13 + 1) - 0.5) * cw * 0.7,
+        y: base.y + (sr(i * 13 + 2) - 0.5) * ch * 0.7,
+      }
+    })
+
+    stateRef.current = initData.map((d, i) => {
+      const { x, y } = positions[i]
+
+      return { ...d, x, y }
+    })
 
     let lastTime = null
 
@@ -82,6 +117,27 @@ function FloatingLogos({ companies, count = PARTICLE_COUNT }) {
         if (p.x > W - p.r) { p.x = W - p.r; p.vx = -Math.abs(p.vx) }
         if (p.y < p.r)     { p.y = p.r;     p.vy =  Math.abs(p.vy) }
         if (p.y > H - p.r) { p.y = H - p.r; p.vy = -Math.abs(p.vy) }
+
+        // Bounce off hero panel
+        const hero = heroRef?.current?.getBoundingClientRect()
+        if (hero) {
+          const closestX = Math.max(hero.left, Math.min(p.x, hero.right))
+          const closestY = Math.max(hero.top,  Math.min(p.y, hero.bottom))
+          const dx = p.x - closestX
+          const dy = p.y - closestY
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.001
+          if (dist < p.r) {
+            const nx = dx / dist
+            const ny = dy / dist
+            p.x += nx * (p.r - dist)
+            p.y += ny * (p.r - dist)
+            const dot = p.vx * nx + p.vy * ny
+            if (dot < 0) {
+              p.vx -= 2 * dot * nx
+              p.vy -= 2 * dot * ny
+            }
+          }
+        }
       }
 
       // 2 — elastic collision (O(n²), fine for n ≤ 30)
@@ -141,7 +197,7 @@ function FloatingLogos({ companies, count = PARTICLE_COUNT }) {
           {p.logoPath ? (
             <img
               src={p.logoPath} alt={p.name} loading="lazy"
-              style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'brightness(0.8)' }}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', padding: p.pad || 0, filter: `${p.invert ? 'invert(1) ' : ''}drop-shadow(0 0 8px ${p.color}99)` }}
             />
           ) : (
             <div style={{
@@ -186,30 +242,14 @@ function LogoImage() {
     )
   }
 
-  // Placeholder shown until a real logo file exists
-  return (
-    <div style={{
-      height: 48, padding: '0 20px',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      border: '1px dashed rgba(167,139,250,0.35)',
-      borderRadius: 4,
-      background: 'rgba(167,139,250,0.05)',
-    }}>
-      <span style={{
-        fontFamily: "'Press Start 2P', monospace",
-        fontSize: 9, color: 'var(--text-muted)',
-        lineHeight: 1.8, letterSpacing: '0.06em',
-      }}>
-        YOUR LOGO
-      </span>
-    </div>
-  )
+  return null
 }
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const navigate = useNavigate()
   const [transitioning, setTransitioning] = useState(false)
+  const heroRef = useRef(null)
 
   return (
     <div style={{
@@ -229,10 +269,10 @@ export default function HomePage() {
       }} />
 
       {/* Bouncing logo particles */}
-      <FloatingLogos companies={COMPANIES} count={PARTICLE_COUNT} />
+      <FloatingLogos companies={COMPANIES} count={PARTICLE_COUNT} heroRef={heroRef} />
 
       {/* ── Glass hero panel ── */}
-      <div style={{
+      <div ref={heroRef} style={{
         position: 'relative', zIndex: 10,
         width: '100%', maxWidth: 520,
         margin: '0 24px',
@@ -272,7 +312,7 @@ export default function HomePage() {
           fontSize: 14, color: '#c4b8e8',
           lineHeight: 1.7, margin: 0, maxWidth: 380,
         }}>
-          Where product strategy gets broken down, frame by frame.
+          Film study for product & strategy decisions
         </p>
 
         {/* Divider */}
@@ -304,7 +344,7 @@ export default function HomePage() {
             e.currentTarget.style.boxShadow = '0 0 24px rgba(255,107,53,0.45), 0 4px 16px rgba(0,0,0,0.4)'
           }}
         >
-          {'> ENTER THE FILM ROOM'}
+          {'> EXPLORE'}
         </button>
       </div>
 

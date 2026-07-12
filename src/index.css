@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Permanent+Marker&display=swap');
 
 :root {
   --bg-base: #1a0a2e;
@@ -34,18 +34,6 @@ body {
   position: relative;
 }
 
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px, transparent 3px,
-    rgba(0, 0, 0, 0.07) 3px, rgba(0, 0, 0, 0.07) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
-}
 
 @keyframes blink {
   50% { opacity: 0; }

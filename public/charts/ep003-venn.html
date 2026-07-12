@@ -1,0 +1,90 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap {
+  background: #1a0a2e;
+  padding: 28px 24px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.scanlines {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+  pointer-events: none;
+  z-index: 10;
+}
+.title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: #ff6b35;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+.footer {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: #4a2d8a;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-top: 12px;
+  position: relative;
+  z-index: 2;
+}
+</style>
+
+<div class="wrap">
+  <div class="scanlines"></div>
+  <div class="title">Startup Card Head to Head</div>
+
+  <svg width="100%" viewBox="0 0 700 460" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+
+    <circle cx="240" cy="230" r="185" fill="rgba(255,107,53,0.11)" stroke="#ff6b35" stroke-width="1.5"/>
+    <circle cx="460" cy="230" r="185" fill="rgba(0,194,168,0.11)" stroke="#00c2a8" stroke-width="1.5"/>
+
+    <text x="130" y="36" font-family="'Press Start 2P', monospace" font-size="13" fill="#ff6b35" text-anchor="middle">BREX</text>
+    <text x="570" y="36" font-family="'Press Start 2P', monospace" font-size="13" fill="#00c2a8" text-anchor="middle">RAMP</text>
+
+    <!-- BREX: bullet x=88, text x=100 (another 10px right) -->
+    <text x="88"  y="155" font-family="Courier New, monospace" font-size="10.5" fill="#ff6b35" text-anchor="start">•</text>
+    <text x="100" y="155" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">Credit based on capital</text>
+    <text x="100" y="170" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">raised, no credit</text>
+    <text x="100" y="185" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">history required</text>
+
+    <text x="88"  y="230" font-family="Courier New, monospace" font-size="10.5" fill="#ff6b35" text-anchor="start">•</text>
+    <text x="100" y="230" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">Rewards built around</text>
+    <text x="100" y="245" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">founder spending</text>
+
+    <text x="88"  y="295" font-family="Courier New, monospace" font-size="10.5" fill="#ff6b35" text-anchor="start">•</text>
+    <text x="100" y="295" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">Credit limits that</text>
+    <text x="100" y="310" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">scale with funding</text>
+
+    <!-- OVERLAP -->
+    <text x="350" y="193" font-family="Courier New, monospace" font-size="10" fill="#ffd700" text-anchor="middle">Corporate card</text>
+    <text x="350" y="207" font-family="Courier New, monospace" font-size="10" fill="#ffd700" text-anchor="middle">for high-growth</text>
+    <text x="350" y="221" font-family="Courier New, monospace" font-size="10" fill="#ffd700" text-anchor="middle">startups</text>
+
+    <text x="350" y="251" font-family="Courier New, monospace" font-size="10" fill="#ffd700" text-anchor="middle">Replace traditional</text>
+    <text x="350" y="265" font-family="Courier New, monospace" font-size="10" fill="#ffd700" text-anchor="middle">bank approval</text>
+    <text x="350" y="279" font-family="Courier New, monospace" font-size="10" fill="#ffd700" text-anchor="middle">process</text>
+
+    <!-- RAMP unchanged -->
+    <text x="430" y="155" font-family="Courier New, monospace" font-size="10.5" fill="#00c2a8" text-anchor="start">•</text>
+    <text x="442" y="155" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">Identify and cut</text>
+    <text x="442" y="170" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">wasteful spend</text>
+
+    <text x="430" y="230" font-family="Courier New, monospace" font-size="10.5" fill="#00c2a8" text-anchor="start">•</text>
+    <text x="442" y="230" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">Set policies and block</text>
+    <text x="442" y="245" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">violating transactions</text>
+
+    <text x="430" y="295" font-family="Courier New, monospace" font-size="10.5" fill="#00c2a8" text-anchor="start">•</text>
+    <text x="442" y="295" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">Manage all expenses</text>
+    <text x="442" y="310" font-family="Courier New, monospace" font-size="10.5" fill="#e2d9f3" text-anchor="start">in one place</text>
+
+  </svg>
+
+  <div class="footer">PRODUCT FILM ROOM · EP. 003 · © 2026</div>
+</div>

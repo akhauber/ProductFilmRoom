@@ -1,0 +1,163 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap { background: #1a0a2e; padding: 28px 20px 32px; font-family: 'Courier New', monospace; position: relative; overflow: hidden; }
+.scanlines { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px); pointer-events: none; z-index: 10; }
+.title { font-family: 'Press Start 2P', monospace; font-size: 14px; color: #ff6b35; text-transform: uppercase; letter-spacing: 2px; text-align: center; margin-bottom: 28px; line-height: 1.6; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.col-head { font-family: 'Press Start 2P', monospace; font-size: 7px; letter-spacing: 1px; text-align: center; padding: 7px 10px; border: 1px solid; margin-bottom: 14px; }
+.col-head.pp { color: #5eb8f5; border-color: #009CDE; background: rgba(0,156,222,0.10); }
+.col-head.st { color: #a89fff; border-color: #635BFF; background: rgba(99,91,255,0.10); }
+.check-item { display: flex; align-items: center; gap: 10px; padding: 10px 10px; margin-bottom: 7px; border: 1px solid; }
+.check-item.pp { border-color: rgba(0,156,222,0.3); background: rgba(0,156,222,0.05); }
+.check-item.st { border-color: rgba(99,91,255,0.3); background: rgba(99,91,255,0.05); }
+.ghost-item { display: flex; align-items: center; gap: 10px; padding: 10px 10px; margin-bottom: 7px; border: 1px dashed rgba(255,255,255,0.18); background: rgba(255,255,255,0.04); }
+.checkbox { flex-shrink: 0; width: 14px; height: 14px; border: 1.5px solid; }
+.checkbox.pp { border-color: #009CDE; }
+.checkbox.st { border-color: #635BFF; }
+.check-title { flex: 1; font-family: 'Press Start 2P', monospace; font-size: 7px; line-height: 1.8; }
+.check-title.pp { color: #5eb8f5; }
+.check-title.st { color: #a89fff; }
+.ghost-title { flex: 1; font-family: 'Courier New', monospace; font-size: 9px; color: rgba(255,255,255,0.4); font-style: italic; }
+.check-tag { flex-shrink: 0; font-family: 'Press Start 2P', monospace; font-size: 5px; padding: 2px 5px; border: 1px solid; white-space: nowrap; }
+.check-tag.pp { color: #5eb8f5; border-color: rgba(0,156,222,0.4); }
+.check-tag.st { color: #a89fff; border-color: rgba(99,91,255,0.4); }
+.summary-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; border-top: 1px dashed #4a2d8a; padding-top: 20px; }
+.summary-box { text-align: center; }
+.summary-label { font-family: 'Press Start 2P', monospace; font-size: 5px; display: block; margin-bottom: 10px; }
+.summary-label.pp { color: rgba(0,156,222,0.6); }
+.summary-label.st { color: rgba(99,91,255,0.6); }
+.summary-val { font-family: 'Press Start 2P', monospace; font-size: 18px; display: block; line-height: 1.4; }
+.summary-val.pp { color: #5eb8f5; }
+.summary-val.st { color: #a89fff; }
+.footer { font-family: 'Courier New', monospace; font-size: 9px; color: #6a4db8; text-align: center; margin-top: 20px; letter-spacing: 1px; }
+</style>
+
+<div class="wrap">
+  <div class="scanlines"></div>
+  <div class="title">Dev Setup Checklist</div>
+
+  <div class="cols">
+
+    <div>
+      <div class="col-head pp">PayPal</div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Apply for merchant account</span>
+        <span class="check-tag pp">3–7 days</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Get gateway approval</span>
+        <span class="check-tag pp">2–5 days</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Complete PCI SAQ</span>
+        <span class="check-tag pp">2–4 days</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Install SSL certificate</span>
+        <span class="check-tag pp">4–8 hrs</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Set up sandbox and API keys</span>
+        <span class="check-tag pp">2–4 hrs</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Build IPN listener</span>
+        <span class="check-tag pp">8–16 hrs</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Build redirect checkout flow</span>
+        <span class="check-tag pp">8–12 hrs</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Test integration</span>
+        <span class="check-tag pp">2–4 hrs</span>
+      </div>
+
+      <div class="check-item pp">
+        <div class="checkbox pp"></div>
+        <span class="check-title pp">Go live</span>
+        <span class="check-tag pp">1 hr</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-head st">Stripe</div>
+
+      <div class="ghost-item">
+        <span class="ghost-title">— no merchant account needed —</span>
+      </div>
+
+      <div class="ghost-item">
+        <span class="ghost-title">— no gateway approval needed —</span>
+      </div>
+
+      <div class="ghost-item">
+        <span class="ghost-title">— PCI handled by Stripe.js —</span>
+      </div>
+
+      <div class="ghost-item">
+        <span class="ghost-title">— SSL handled by Stripe.js —</span>
+      </div>
+
+      <div class="check-item st">
+        <div class="checkbox st"></div>
+        <span class="check-title st">Sign up and get API keys</span>
+        <span class="check-tag st">15 mins</span>
+      </div>
+
+      <div class="ghost-item">
+        <span class="ghost-title">— no IPN listener needed —</span>
+      </div>
+
+      <div class="check-item st">
+        <div class="checkbox st"></div>
+        <span class="check-title st">Add Stripe.js and charge flow</span>
+        <span class="check-tag st">4–6 hrs</span>
+      </div>
+
+      <div class="check-item st">
+        <div class="checkbox st"></div>
+        <span class="check-title st">Test integration</span>
+        <span class="check-tag st">2–4 hrs</span>
+      </div>
+
+      <div class="check-item st">
+        <div class="checkbox st"></div>
+        <span class="check-title st">Go live</span>
+        <span class="check-tag st">1 hr</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-box">
+      <span class="summary-label pp">Total PayPal setup time</span>
+      <span class="summary-val pp">3–5 weeks</span>
+    </div>
+    <div class="summary-box">
+      <span class="summary-label st">Total Stripe setup time</span>
+      <span class="summary-val st">~8 hours</span>
+    </div>
+  </div>
+
+  <div class="footer">PRODUCT FILM ROOM · EP. 002 · © 2026</div>
+</div>

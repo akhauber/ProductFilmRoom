@@ -1,0 +1,191 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  .retro-wrap {
+    background: #1a0a2e;
+    padding: 28px 24px 32px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+  }
+  .retro-title {
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 10px;
+    color: #ff6b35;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .retro-sub {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #a78bfa;
+    text-align: center;
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .bar-label {
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 7px;
+    color: #e2d9f3;
+    width: 120px;
+    min-width: 120px;
+    text-align: right;
+    padding-right: 12px;
+    line-height: 1.8;
+  }
+  .bar-label .year {
+    display: block;
+    font-size: 6px;
+    color: #7c6fa0;
+    margin-top: 3px;
+  }
+  .bar-track {
+    flex: 1;
+    height: 28px;
+    background: #2d1b5e;
+    border: 1px solid #4a2d8a;
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    box-sizing: border-box;
+    position: relative;
+  }
+  .bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: rgba(255,255,255,0.12);
+  }
+  .bar-pct {
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 8px;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+    white-space: nowrap;
+  }
+  .bar-pixels {
+    position: absolute;
+    top: 0; bottom: 0; right: -2px;
+    width: 4px;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.3) 0px,
+      rgba(255,255,255,0.3) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+  .highlight-row .bar-label {
+    color: #ffd700;
+  }
+  .highlight-row .bar-label .year {
+    color: #ffaa00;
+  }
+  .scanlines {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.07) 3px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+  }
+  .retro-footer {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #4a2d8a;
+    text-align: center;
+    margin-top: 20px;
+    letter-spacing: 1px;
+  }
+</style>
+
+<div class="retro-wrap">
+  <div class="scanlines"></div>
+
+  <div class="retro-title">DAU / MAU stickiness ranking</div>
+  <div class="retro-sub">% of monthly users who open the app daily</div>
+
+  <div class="bar-row">
+    <div class="bar-label">
+      WHATSAPP
+      <span class="year">2014 · 72%</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:72%; background: #1a6b3a;">
+        <span class="bar-pct">72%</span>
+        <div class="bar-pixels"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar-row">
+    <div class="bar-label">
+      FACEBOOK
+      <span class="year">2021 · 66%</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:66%; background: #1a3a8a;">
+        <span class="bar-pct">66%</span>
+        <div class="bar-pixels"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar-row highlight-row">
+    <div class="bar-label">
+      INSTAGRAM
+      <span class="year">2017 · 62%</span>
+    </div>
+    <div class="bar-track" style="border-color: #ffd700; box-shadow: 0 0 8px rgba(255,215,0,0.25);">
+      <div class="bar-fill" style="width:62%; background: #8a3a00;">
+        <span class="bar-pct">62%</span>
+        <div class="bar-pixels"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar-row">
+    <div class="bar-label">
+      TIKTOK
+      <span class="year">2024 · 57%</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:57%; background: #6b0a3a;">
+        <span class="bar-pct">57%</span>
+        <div class="bar-pixels"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar-row">
+    <div class="bar-label">
+      SNAPCHAT
+      <span class="year">2017 · 50%</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:50%; background: #5a6b00;">
+        <span class="bar-pct">50%</span>
+        <div class="bar-pixels"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="retro-footer">PRODUCT FILM ROOM · EP. 001 · © 2026</div>
+</div>
